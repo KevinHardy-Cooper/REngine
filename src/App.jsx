@@ -59,10 +59,6 @@ class Form extends React.Component {
     // This will change depending on plan
     this.plan = 'Canada-Wide Talk + Text 25 Dbl';
     this.servProv = 'Koodo';
-
-    // Final charge
-    // This will change depending the invoice
-    this.totalDue = 25;
     
     // Billing cycle
     // This will change depending on the billing cycle
@@ -75,33 +71,38 @@ class Form extends React.Component {
     this.longDistanceAllowed = 0;
     this.textMsgSentAllowed = Number.POSITIVE_INFINITY;
     this.textMsgReceivedAllowed = Number.POSITIVE_INFINITY;
-    this.dataUsageAllowed = 0
+    this.dataAllowed = 0
     this.localAirtimeAllowed = 200;
 
     // Usages
     // This will change depending on the usage
-    this.longDistance = Math.round(Math.random() * 50);
-    this.textMsgSent = Math.round(Math.random() * 4000);
-    this.textMsgReceived = Math.round(Math.random() * 4000);
+    this.longDistanceUsage = Math.round(Math.random() * 50);
+    this.textMsgSentUsage = Math.round(Math.random() * 3000);
+    this.textMsgReceivedUsage = Math.round(Math.random() * 3000);
     this.dataUsage = Math.round(Math.random() * 10 * Math.pow(10, 2))/Math.pow(10,2);
-    this.localAirtime = Math.round(Math.random() * 500);
+    this.localAirtimeUsage = Math.round(Math.random() * 250);
 
     // Usage charges
     // This will change depending on the usage and the charges
-    var potentialLongDistanceOverage = this.longDistance - this.longDistanceAllowed;
-    this.longDistanceCharge = potentialLongDistanceOverage > 0 ? potentialLongDistanceOverage * 0.50 : 0;
+    this.potentialLongDistanceOverage = this.longDistanceUsage - this.longDistanceAllowed;
+    this.longDistanceCharge = this.potentialLongDistanceOverage > 0 ? this.potentialLongDistanceOverage * 0.50 : 0;
     
-    var potentialTextMsgSentOverage = this.textMsgSent - this.textMsgSentAllowed;
-    this.textMsgSentCharge = this.textMsgSentAllowed != Number.POSITIVE_INFINITY ? potentialTextMsgSentOverage * 0.25 : 0;
+    this.potentialTextMsgSentOverage = this.textMsgSentUsage - this.textMsgSentAllowed;
+    this.textMsgSentCharge = this.textMsgSentAllowed != Number.POSITIVE_INFINITY ? this.potentialTextMsgSentOverage * 0.25 : 0;
 
-    var potentialTextMsgReceivedOverage = this.textMsgReceived - this.textMsgReceivedAllowed;
-    this.textMsgReceivedCharge = this.textMsgReceivedAllowed != Number.POSITIVE_INFINITY ? potentialTextMsgReceivedOverage * 0.25 : 0;
+    this.potentialTextMsgReceivedOverage = this.textMsgReceivedUsage - this.textMsgReceivedAllowed;
+    this.textMsgReceivedCharge = this.textMsgReceivedAllowed != Number.POSITIVE_INFINITY ? this.potentialTextMsgReceivedOverage * 0.25 : 0;
     
-    var potentialDataUsageOverage = this.dataUsage - this.dataUsageAllowed;
-    this.dataUsageCharge = potentialDataUsageOverage > 0 ? potentialDataUsageOverage * 2 : 0;
+    this.potentialDataOverage = this.dataUsage - this.dataUsageAllowed;
+    this.dataUsageCharge = this.potentialDataOverage > 0 ? this.potentialDataUsageOverage * 2 : 0;
 
-    var potentialLocalAirtimeOverage = this.localAirtime - this.localAirtimeAllowed;
-    this.localAirtimeCharge = potentialLocalAirtimeOverage > 0 ? potentialLocalAirtimeOverage * 0.5 : 0;
+    this.potentialLocalAirtimeOverage = this.localAirtimeUsage - this.localAirtimeAllowed;
+    this.localAirtimeCharge = this.potentialLocalAirtimeOverage > 0 ? this.potentialLocalAirtimeOverage * 0.5 : 0;
+
+    // Final charge
+    // This will change depending the invoice
+    var baseRate = 25;
+    this.totalDue = baseRate + this.longDistanceCharge + this.textMsgSentCharge + this.textMsgReceivedCharge + this.dataUsageCharge + this.localAirtimeCharge;
 
     this.state = {value: ''};
 
@@ -115,9 +116,9 @@ class Form extends React.Component {
           + 'The total due was submitted: ' + this.totalDue + '.\n'
           + 'The start date was submitted: ' + this.startDate + '.\n'
           + 'The end date was submitted: ' + this.endDate + '.\n'
-          + 'The long distance usage charge was submitted: ' + this.longDistance + '.\n'
-          + 'The text messages sent charge was submitted: ' + this.textMsgSent + '.\n' 
-          + 'The text messages received charge was submitted: ' + this.textMsgReceived + '.\n' + 'The local airtime usage charge was submitted: ' + this.localAirtime);
+          + 'The long distance usage charge was submitted: ' + this.longDistanceUsage + '.\n'
+          + 'The text messages sent charge was submitted: ' + this.textMsgSentUsage + '.\n' 
+          + 'The text messages received charge was submitted: ' + this.textMsgReceivedUsage + '.\n' + 'The local airtime usage charge was submitted: ' + this.localAirtimeUsage);
     event.preventDefault();
   }
 
@@ -131,16 +132,27 @@ class Form extends React.Component {
         <p>Billing Cycle Start Date: {this.startDate}</p>
         <p>Billing Cycle End Date: {this.endDate}</p>
         <h3>Usage Charges:</h3>
-        <p>Long Distance - Domestic Phone (of {this.longDistanceAllowed}:00): {this.longDistance}:00</p>
-        <p><strong>Overage Charge for Long Distance: ${this.longDistanceCharge} @ $0.50 / overage minute of long distance airtime</strong></p>
-        <p>Text Msg Sent (of {this.textMsgSentAllowed}): {this.textMsgSent}</p>
-        <p><strong>Overage Charge for Text Msg Sent: ${this.textMsgSentCharge} @ $0.25 / overage text message sent</strong></p>
-        <p>Text Msg Received (of {this.textMsgReceivedAllowed}): {this.textMsgReceived}</p>
-        <p><strong>Overage Charge for Text Received Sent: ${this.textMsgReceivedCharge} @ $0.25 / overage text message received</strong></p>
-        <p>Data Usage (of {this.dataUsageAllowed} MB): {this.dataUsage} MB</p>
-        <p><strong>Overage Charge for Data: ${this.dataUsageCharge} @ $2.00 / overage MB of data used</strong></p>
-        <p>Local Airtime (of {this.localAirtimeAllowed}:00): {this.localAirtime}:00</p>
-        <p><strong>Overage Charge for Local Airtime: ${this.localAirtimeCharge} @ $0.5 / overage minute of local airtime</strong></p>
+        
+        {/*Long distance*/}
+        <p>Long Distance - Domestic Phone (of {this.longDistanceAllowed}:00): {this.longDistanceUsage}:00</p>
+        {this.potentialLongDistanceOverage > 0 ? <p><strong>Overage Charge for Long Distance: ${this.longDistanceCharge}</strong> ({this.potentialLongDistanceOverage} overage minutes of long distance @ $0.50 / overage minute)</p> : null}
+        
+        {/*Text message sent*/}
+        <p>Text Msg Sent (of {this.textMsgSentAllowed}): {this.textMsgSentUsage}</p>
+        {this.potentialTextMsgSentOverage > 0 ? <p><strong>Overage Charge for Text Msg Sent: ${this.textMsgSentCharge}</strong> ({this.potentialTextMsgSentOverage} overage texts sent @ $0.25 / overage message)</p> : null}
+        
+        {/*Text message received*/}
+        <p>Text Msg Received (of {this.textMsgReceivedAllowed}): {this.textMsgReceivedUsage}</p>
+        {this.potentialTextMsgReceivedOverage > 0 ? <p><strong>Overage Charge for Text Received Sent: ${this.textMsgReceivedCharge}</strong>({this.potentialTextMsgReceivedOverage} overage texts received @ $0.25 / overage message)</p> : null}
+        
+        {/*Data usage*/}
+        <p>Data Usage (of {this.dataAllowed} MB): {this.dataUsage} MB</p>
+        {this.potentialDataUsageOverage > 0 ? <p><strong>Overage Charge for Data: ${this.dataUsageCharge}</strong> ({this.potentialDataUsageOverage} MB of overage data used @ $2.00 / overage MB)</p> : null}
+       
+        {/*Local airtime*/}
+        <p>Local Airtime (of {this.localAirtimeAllowed}:00): {this.localAirtimeUsage}:00 </p>
+        {this.potentialLocalAirtimeOverage > 0 ? <p><strong>Overage Charge for Local Airtime: ${this.localAirtimeCharge}</strong>({this.potentialLocalAirtimeOverage} overage minutes of local airtime @ $0.5 / overage minute)</p> : null}
+
         <input type="submit" value="Submit" />
       </form>
     );
