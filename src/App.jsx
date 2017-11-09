@@ -63,8 +63,8 @@ class Form extends React.Component {
     // Billing cycle
     // This will change depending on the billing cycle
     var d = new Date();
-    this.startDate = d.getFullYear() + "-" + d.getMonth() + "-" + d.getDate();
-    this.endDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + (d.getDate() - 1) ;
+    this.startDate = d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate();
+    this.endDate = d.getFullYear() + "-" + (d.getMonth() + 2) + "-" + (d.getDate() - 1) ;
 
     // Allowances
     // This will change depending on the plan
@@ -93,8 +93,8 @@ class Form extends React.Component {
     this.potentialTextMsgReceivedOverage = this.textMsgReceivedUsage - this.textMsgReceivedAllowed;
     this.textMsgReceivedCharge = this.textMsgReceivedAllowed != Number.POSITIVE_INFINITY ? this.potentialTextMsgReceivedOverage * 0.25 : 0;
     
-    this.potentialDataOverage = this.dataUsage - this.dataUsageAllowed;
-    this.dataUsageCharge = this.potentialDataOverage > 0 ? this.potentialDataUsageOverage * 2 : 0;
+    this.potentialDataOverage = this.dataUsage - this.dataAllowed;
+    this.dataCharge = this.potentialDataOverage > 0 ? this.potentialDataOverage * 2 : 0;
 
     this.potentialLocalAirtimeOverage = this.localAirtimeUsage - this.localAirtimeAllowed;
     this.localAirtimeCharge = this.potentialLocalAirtimeOverage > 0 ? this.potentialLocalAirtimeOverage * 0.5 : 0;
@@ -102,7 +102,7 @@ class Form extends React.Component {
     // Final charge
     // This will change depending the invoice
     var baseRate = 25;
-    this.totalDue = baseRate + this.longDistanceCharge + this.textMsgSentCharge + this.textMsgReceivedCharge + this.dataUsageCharge + this.localAirtimeCharge;
+    this.totalDue = baseRate + this.longDistanceCharge + this.textMsgSentCharge + this.textMsgReceivedCharge + this.dataCharge + this.localAirtimeCharge;
 
     this.state = {value: ''};
 
@@ -110,16 +110,55 @@ class Form extends React.Component {
   }
 
   handleSubmit(event) {
-    alert(  'A name was submitted: ' + this.name + '.\n'
-          + 'A plan was submitted: ' + this.plan + '.\n'
-          + 'A service provider was submitted: ' + this.servProv  + '.\n' 
-          + 'The total due was submitted: ' + this.totalDue + '.\n'
-          + 'The start date was submitted: ' + this.startDate + '.\n'
-          + 'The end date was submitted: ' + this.endDate + '.\n'
-          + 'The long distance usage charge was submitted: ' + this.longDistanceUsage + '.\n'
-          + 'The text messages sent charge was submitted: ' + this.textMsgSentUsage + '.\n' 
-          + 'The text messages received charge was submitted: ' + this.textMsgReceivedUsage + '.\n' + 'The local airtime usage charge was submitted: ' + this.localAirtimeUsage);
+  alert("hi");
     event.preventDefault();
+    // On submit of the form, send a POST request with the data to the server.
+
+    fetch('http://localhost:3000/invoices').then(function(response) {
+       alert(JSON.stringify(response));
+      alert(JSON.stringify(response.json()));
+        return response.json();
+      }).then(function(body) {
+      alert(JSON.stringify(body));
+        console.log(body);
+      });
+
+    //, { 
+        /*method: 'POST',
+        data: {
+          name: this.name,
+          plan: this.plan, 
+          servProd: this.servProd, 
+          flatRate: this.flatRate, 
+          totalDue: this.totalDue, 
+          startDate: this.startDate, 
+          endDate: this.endDate, 
+          longDistanceAllowed: this.longDistanceAllowed, 
+          longDistanceUsage: this.longDistanceUsage, 
+          longDistanceOverageChargeRate: this.longDistanceOverageCharges, 
+          textMsgSentAllowed: this.textMsgSentAllowed, 
+          textMsgSentUsage: this.textMsgSentUsage, 
+          textMsgSentOverageChargeRate: this.textMsgSentOverageChargeRate, 
+          textMsgReceivedAllowed: this.textMsgReceivedAllowed, 
+          textMsgReceivedUsage: this.textMsgReceivedUsage, 
+          textMsgReceivedOverageChargeRate: this.textMsgReceivedOverageChargeRate, 
+          dataAllowed: this.dataAllowed, 
+          dataUsage: this.dataUsage, 
+          dataOverageChargeRate: this.dataOverageChargeRate, 
+          localAirtimeAllowed: this.localAirtimeAllowed, 
+          localAirtimeUsage: this.localAirtimeUsage, 
+          localAirtimeOverageChargeRate: this.localAirtimeOverageChargeRate
+        }*/
+
+      //})
+      /*.then(function(response) {
+      alert(JSON.stringify(response));
+      alert(JSON.stringify(response.json()));
+        return response.json();
+      }).then(function(body) {
+      alert(JSON.stringify(body);
+        console.log(body);
+      });*/
   }
 
   render() {
@@ -147,7 +186,7 @@ class Form extends React.Component {
         
         {/*Data usage*/}
         <p>Data Usage (of {this.dataAllowed} MB): {this.dataUsage} MB</p>
-        {this.potentialDataUsageOverage > 0 ? <p><strong>Overage Charge for Data: ${this.dataUsageCharge}</strong> ({this.potentialDataUsageOverage} MB of overage data used @ $2.00 / overage MB)</p> : null}
+        {this.potentialDataOverage > 0 ? <p><strong>Overage Charge for Data: ${this.dataCharge}</strong> ({this.potentialDataOverage} MB of overage data used @ $2.00 / overage MB)</p> : null}
        
         {/*Local airtime*/}
         <p>Local Airtime (of {this.localAirtimeAllowed}:00): {this.localAirtimeUsage}:00 </p>
