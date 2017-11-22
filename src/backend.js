@@ -30,26 +30,27 @@ var con = mysql.createConnection({
   database: "REngine"
 });
 
-// Connect to database.
-// connection.connect();
-
 // Listen to POST requests to /users.
 app.get('/invoices', function(req, res) {
-  console.log("i receive a get request");
-  // Get sent data.
-  // var invoice = req.body;
-  // console.log(invoice);
   // Do a MySQL query.
-  // var query = con.query("SELECT * FROM customer_invoices", function (err, result) {
+  var query = con.query("SELECT * FROM customer_invoices", function (err, result) {
+    if (err) throw err;
 
+    // console.log(result);
+    res.json(result);
+  });
+});
+
+// Listen to POST requests to /users.
+app.post('/invoices/new', function(req, res) {
+  console.log(req.body);
+  // Do a MySQL query.
+  // var query = con.query("INSERT INTO customer_invoices (name, plan, servProd, flatRate, totalDue, startDate, endDate, longDistanceAllowed, longDistanceUsage, longDistanceOverageChargeRate, textMsgSentAllowed, textMsgSentUsage, textMsgSentOverageChargeRate, textMsgReceivedAllowed, textMsgReceivedUsage, textMsgReceivedOverageChargeRate, dataAllowed, dataUsage, dataOverageChargeRate, localAirtimeAllowed, localAirtimeUsage, localAirtimeOverageChargeRate) VALUES ("+", 'Canada-Wide Talk + Text 25 Dbl', 'Koodo', '25', '49', '2017-10-8', '2017-11-07', '0', '48', '24', 'INFINITY', '411', '0', 'INFINITY', '1400', '0', '0', '7.1', '14.2', '200', '103', '0')", function (err, result) {
   //   if (err) throw err;
+
   //   console.log(result);
-    // Neat!
+  //   res.json(result);
   // });
-  // alert(invoice.toString());
-  // res.end('Success');
-  var tryFetch = {myString: 'I am working fetch'};
-  res.json(tryFetch)
 });
 
 app.listen(3000, function() {
@@ -57,6 +58,7 @@ app.listen(3000, function() {
 });
 //columns
 //name, plan, servProd, flatRate, totalDue, startDate, endDate, longDistanceAllowed, longDistanceUsage, longDistanceOverageChargeRate, textMsgSentAllowed, textMsgSentUsage, textMsgSentOverageChargeRate, textMsgReceivedAllowed, textMsgReceivedUsage, textMsgReceivedOverageChargeRate, dataAllowed, dataUsage, dataOverageChargeRate, localAirtimeAllowed, localAirtimeUsage, localAirtimeOverageChargeRate, id
+
 
 // search query:
 // con.query("SELECT * FROM customer_invoices", function (err, result) {

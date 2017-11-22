@@ -110,17 +110,37 @@ class Form extends React.Component {
   }
 
   handleSubmit(event) {
-  alert("hi");
     event.preventDefault();
-    // On submit of the form, send a POST request with the data to the server.
+    
 
-    fetch('http://localhost:3000/invoices').then(function(response) {
-       alert(JSON.stringify(response));
-      alert(JSON.stringify(response.json()));
-        return response.json();
-      }).then(function(body) {
-      alert(JSON.stringify(body));
-        console.log(body);
+    // For testing, executing a GET
+    fetch('http://localhost:3000/invoices', {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    })
+      .then((response) => {
+        if(response.ok){
+          response.json().then(json => {
+            console.log(json);
+          });
+        }
+      });
+      
+
+    // On submit of the form, send a GET request with the data to the server.
+
+    fetch('http://localhost:3000/invoices/new', {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        firstParam: 'yourValue',
+        secondParam: 'yourOtherValue',
+      })
       });
 
     //, { 
@@ -194,6 +214,7 @@ class Form extends React.Component {
 
         <input type="submit" value="Submit" />
       </form>
+      
     );
   }
 }
