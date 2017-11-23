@@ -58,7 +58,7 @@ class Form extends React.Component {
     // Plan related
     // This will change depending on plan
     this.plan = 'Canada-Wide Talk + Text 25 Dbl';
-    this.servProv = 'Koodo';
+    this.servProd = 'Koodo';
     
     // Billing cycle
     // This will change depending on the billing cycle
@@ -85,24 +85,24 @@ class Form extends React.Component {
     // Usage charges
     // This will change depending on the usage and the charges
     this.potentialLongDistanceOverage = this.longDistanceUsage - this.longDistanceAllowed;
-    this.longDistanceCharge = this.potentialLongDistanceOverage > 0 ? this.potentialLongDistanceOverage * 0.50 : 0;
+    this.longDistanceOverageChargeRate = this.potentialLongDistanceOverage > 0 ? this.potentialLongDistanceOverage * 0.50 : 0;
     
     this.potentialTextMsgSentOverage = this.textMsgSentUsage - this.textMsgSentAllowed;
-    this.textMsgSentCharge = this.textMsgSentAllowed != Number.POSITIVE_INFINITY ? this.potentialTextMsgSentOverage * 0.25 : 0;
+    this.textMsgSentOverageChargeRate = this.textMsgSentAllowed != Number.POSITIVE_INFINITY ? this.potentialTextMsgSentOverage * 0.25 : 0;
 
     this.potentialTextMsgReceivedOverage = this.textMsgReceivedUsage - this.textMsgReceivedAllowed;
-    this.textMsgReceivedCharge = this.textMsgReceivedAllowed != Number.POSITIVE_INFINITY ? this.potentialTextMsgReceivedOverage * 0.25 : 0;
+    this.textMsgReceivedOverageChargeRate = this.textMsgReceivedAllowed != Number.POSITIVE_INFINITY ? this.potentialTextMsgReceivedOverage * 0.25 : 0;
     
     this.potentialDataOverage = this.dataUsage - this.dataAllowed;
-    this.dataCharge = this.potentialDataOverage > 0 ? this.potentialDataOverage * 2 : 0;
+    this.dataOverageChargeRate = this.potentialDataOverage > 0 ? this.potentialDataOverage * 2 : 0;
 
     this.potentialLocalAirtimeOverage = this.localAirtimeUsage - this.localAirtimeAllowed;
-    this.localAirtimeCharge = this.potentialLocalAirtimeOverage > 0 ? this.potentialLocalAirtimeOverage * 0.5 : 0;
+    this.localAirtimeOverageChargeRate = this.potentialLocalAirtimeOverage > 0 ? this.potentialLocalAirtimeOverage * 0.5 : 0;
 
     // Final charge
     // This will change depending the invoice
-    var baseRate = 25;
-    this.totalDue = baseRate + this.longDistanceCharge + this.textMsgSentCharge + this.textMsgReceivedCharge + this.dataCharge + this.localAirtimeCharge;
+    this.flatRate = 25;
+    this.totalDue = this.flatRate + this.longDistanceOverageChargeRate + this.textMsgSentOverageChargeRate + this.textMsgReceivedOverageChargeRate + this.dataOverageChargeRate + this.localAirtimeOverageChargeRate;
 
     this.state = {value: ''};
 
@@ -129,55 +129,45 @@ class Form extends React.Component {
       });
       
 
-    // On submit of the form, send a GET request with the data to the server.
+    // On submit of the form, send a POST request with the data to the server.
 
-    fetch('http://localhost:3000/invoices/new', {
+    /*fetch('http://localhost:3000/invoices/new', {
       method: "POST",
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        firstParam: 'yourValue',
-        secondParam: 'yourOtherValue',
+        name: this.name,
+        plan: this.plan, 
+        servProd: this.servProd, 
+        flatRate: this.flatRate, 
+        totalDue: this.totalDue, 
+        startDate: this.startDate, 
+        endDate: this.endDate, 
+        longDistanceAllowed: this.longDistanceAllowed, 
+        longDistanceUsage: this.longDistanceUsage, 
+        longDistanceOverageChargeRate: this.longDistanceOverageChargeRate, 
+        textMsgSentAllowed: this.textMsgSentAllowed, 
+        textMsgSentUsage: this.textMsgSentUsage, 
+        textMsgSentOverageChargeRate: this.textMsgSentOverageChargeRate, 
+        textMsgReceivedAllowed: this.textMsgReceivedAllowed, 
+        textMsgReceivedUsage: this.textMsgReceivedUsage, 
+        textMsgReceivedOverageChargeRate: this.textMsgReceivedOverageChargeRate, 
+        dataAllowed: this.dataAllowed, 
+        dataUsage: this.dataUsage, 
+        dataOverageChargeRate: this.dataOverageChargeRate, 
+        localAirtimeAllowed: this.localAirtimeAllowed, 
+        localAirtimeUsage: this.localAirtimeUsage, 
+        localAirtimeOverageChargeRate: this.localAirtimeOverageChargeRate
       })
-      });
-
-    //, { 
-        /*method: 'POST',
-        data: {
-          name: this.name,
-          plan: this.plan, 
-          servProd: this.servProd, 
-          flatRate: this.flatRate, 
-          totalDue: this.totalDue, 
-          startDate: this.startDate, 
-          endDate: this.endDate, 
-          longDistanceAllowed: this.longDistanceAllowed, 
-          longDistanceUsage: this.longDistanceUsage, 
-          longDistanceOverageChargeRate: this.longDistanceOverageCharges, 
-          textMsgSentAllowed: this.textMsgSentAllowed, 
-          textMsgSentUsage: this.textMsgSentUsage, 
-          textMsgSentOverageChargeRate: this.textMsgSentOverageChargeRate, 
-          textMsgReceivedAllowed: this.textMsgReceivedAllowed, 
-          textMsgReceivedUsage: this.textMsgReceivedUsage, 
-          textMsgReceivedOverageChargeRate: this.textMsgReceivedOverageChargeRate, 
-          dataAllowed: this.dataAllowed, 
-          dataUsage: this.dataUsage, 
-          dataOverageChargeRate: this.dataOverageChargeRate, 
-          localAirtimeAllowed: this.localAirtimeAllowed, 
-          localAirtimeUsage: this.localAirtimeUsage, 
-          localAirtimeOverageChargeRate: this.localAirtimeOverageChargeRate
-        }*/
-
-      //})
-      /*.then(function(response) {
-      alert(JSON.stringify(response));
-      alert(JSON.stringify(response.json()));
-        return response.json();
-      }).then(function(body) {
-      alert(JSON.stringify(body);
-        console.log(body);
+    }).then((response) => {
+    // We just want to check if the post was ok
+        if(response.ok){
+          response.json().then(json => {
+            console.log(json);
+          });
+        }
       });*/
   }
 
@@ -186,7 +176,7 @@ class Form extends React.Component {
       <form onSubmit={this.handleSubmit}>
         <p>Name: {this.name}</p>
         <p>Plan: {this.plan}</p>
-        <p>Service Provider: {this.servProv}</p>
+        <p>Service Provider: {this.servProd}</p>
         <p>Total Due: ${this.totalDue}</p>
         <p>Billing Cycle Start Date: {this.startDate}</p>
         <p>Billing Cycle End Date: {this.endDate}</p>
@@ -194,23 +184,23 @@ class Form extends React.Component {
         
         {/*Long distance*/}
         <p>Long Distance - Domestic Phone (of {this.longDistanceAllowed}:00): {this.longDistanceUsage}:00</p>
-        {this.potentialLongDistanceOverage > 0 ? <p><strong>Overage Charge for Long Distance: ${this.longDistanceCharge}</strong> ({this.potentialLongDistanceOverage} overage minutes of long distance @ $0.50 / overage minute)</p> : null}
+        {this.potentialLongDistanceOverage > 0 ? <p><strong>Overage Charge for Long Distance: ${this.longDistanceOverageChargeRate}</strong> ({this.potentialLongDistanceOverage} overage minutes of long distance @ $0.50 / overage minute)</p> : null}
         
         {/*Text message sent*/}
         <p>Text Msg Sent (of {this.textMsgSentAllowed}): {this.textMsgSentUsage}</p>
-        {this.potentialTextMsgSentOverage > 0 ? <p><strong>Overage Charge for Text Msg Sent: ${this.textMsgSentCharge}</strong> ({this.potentialTextMsgSentOverage} overage texts sent @ $0.25 / overage message)</p> : null}
+        {this.potentialTextMsgSentOverage > 0 ? <p><strong>Overage Charge for Text Msg Sent: ${this.textMsgSentOverageChargeRate}</strong> ({this.potentialTextMsgSentOverage} overage texts sent @ $0.25 / overage message)</p> : null}
         
         {/*Text message received*/}
         <p>Text Msg Received (of {this.textMsgReceivedAllowed}): {this.textMsgReceivedUsage}</p>
-        {this.potentialTextMsgReceivedOverage > 0 ? <p><strong>Overage Charge for Text Received Sent: ${this.textMsgReceivedCharge}</strong>({this.potentialTextMsgReceivedOverage} overage texts received @ $0.25 / overage message)</p> : null}
+        {this.potentialTextMsgReceivedOverage > 0 ? <p><strong>Overage Charge for Text Received Sent: ${this.textMsgReceivedOverageChargeRate}</strong>({this.potentialTextMsgReceivedOverage} overage texts received @ $0.25 / overage message)</p> : null}
         
         {/*Data usage*/}
         <p>Data Usage (of {this.dataAllowed} MB): {this.dataUsage} MB</p>
-        {this.potentialDataOverage > 0 ? <p><strong>Overage Charge for Data: ${this.dataCharge}</strong> ({this.potentialDataOverage} MB of overage data used @ $2.00 / overage MB)</p> : null}
+        {this.potentialDataOverage > 0 ? <p><strong>Overage Charge for Data: ${this.dataOverageChargeRate}</strong> ({this.potentialDataOverage} MB of overage data used @ $2.00 / overage MB)</p> : null}
        
         {/*Local airtime*/}
         <p>Local Airtime (of {this.localAirtimeAllowed}:00): {this.localAirtimeUsage}:00 </p>
-        {this.potentialLocalAirtimeOverage > 0 ? <p><strong>Overage Charge for Local Airtime: ${this.localAirtimeCharge}</strong>({this.potentialLocalAirtimeOverage} overage minutes of local airtime @ $0.5 / overage minute)</p> : null}
+        {this.potentialLocalAirtimeOverage > 0 ? <p><strong>Overage Charge for Local Airtime: ${this.localAirtimeOverageChargeRate}</strong>({this.potentialLocalAirtimeOverage} overage minutes of local airtime @ $0.5 / overage minute)</p> : null}
 
         <input type="submit" value="Submit" />
       </form>

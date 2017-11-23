@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var express = require('express');
 var app = express();
+var bodyParser = require('body-parser');
 
 // Add headers
 app.use(function (req, res, next) {
@@ -22,6 +23,9 @@ app.use(function (req, res, next) {
     next();
 });
 
+// Parses the text as JSON and exposes the resulting object on req.body
+app.use(bodyParser.json());
+
 // Set up connection to database.
 var con = mysql.createConnection({
   host: "localhost",
@@ -30,27 +34,42 @@ var con = mysql.createConnection({
   database: "REngine"
 });
 
-// Listen to POST requests to /users.
+// Listen to GET requests to /invoices.
 app.get('/invoices', function(req, res) {
   // Do a MySQL query.
   var query = con.query("SELECT * FROM customer_invoices", function (err, result) {
     if (err) throw err;
 
-    // console.log(result);
     res.json(result);
   });
 });
 
-// Listen to POST requests to /users.
+// Listen to POST requests to /invoices/new.
 app.post('/invoices/new', function(req, res) {
-  console.log(req.body);
-  // Do a MySQL query.
-  // var query = con.query("INSERT INTO customer_invoices (name, plan, servProd, flatRate, totalDue, startDate, endDate, longDistanceAllowed, longDistanceUsage, longDistanceOverageChargeRate, textMsgSentAllowed, textMsgSentUsage, textMsgSentOverageChargeRate, textMsgReceivedAllowed, textMsgReceivedUsage, textMsgReceivedOverageChargeRate, dataAllowed, dataUsage, dataOverageChargeRate, localAirtimeAllowed, localAirtimeUsage, localAirtimeOverageChargeRate) VALUES ("+", 'Canada-Wide Talk + Text 25 Dbl', 'Koodo', '25', '49', '2017-10-8', '2017-11-07', '0', '48', '24', 'INFINITY', '411', '0', 'INFINITY', '1400', '0', '0', '7.1', '14.2', '200', '103', '0')", function (err, result) {
-  //   if (err) throw err;
+  // Do a MySQL query
+  var query = con.query("INSERT INTO customer_invoices (name, plan, servProd, flatRate, totalDue, startDate, endDate, longDistanceAllowed, longDistanceUsage, longDistanceOverageChargeRate, textMsgSentAllowed, textMsgSentUsage, textMsgSentOverageChargeRate, textMsgReceivedAllowed, textMsgReceivedUsage, textMsgReceivedOverageChargeRate, dataAllowed, dataUsage, dataOverageChargeRate, localAirtimeAllowed, localAirtimeUsage, localAirtimeOverageChargeRate) VALUES ('"+req.body.name+"', '"+req.body.plan+"', '"+req.body.servProd+"', '"+req.body.flatRate+"', '"+req.body.totalDue+"', '"+req.body.startDate+"', '"+req.body.endDate+"', '"+req.body.longDistanceAllowed+"', '"+req.body.longDistanceUsage+"', '"+req.body.longDistanceOverageChargeRate+"', '"+req.body.textMsgSentAllowed+"', '"+req.body.textMsgSentUsage+"', '"+req.body.textMsgSentOverageChargeRate+"', '"+req.body.textMsgReceivedAllowed+"', '"+req.body.textMsgReceivedUsage+"', '"+req.body.textMsgReceivedOverageChargeRate+"', '"+req.body.dataAllowed+"', '"+req.body.dataUsage+"', '"+req.body.dataOverageChargeRate+"', '"+req.body.localAirtimeAllowed+"', '"+req.body.localAirtimeUsage+"', '"+req.body.localAirtimeOverageChargeRate+"')", function (err, result) {
+    if (err) throw err;
+    res.json(result);
+  });
+});
 
-  //   console.log(result);
-  //   res.json(result);
-  // });
+// Listen to GET requests to /plans.
+app.get('/plans', function(req, res) {
+  // Do a MySQL query.
+  var query = con.query("SELECT * FROM phone_plans", function (err, result) {
+    if (err) throw err;
+
+    res.json(result);
+  });
+});
+
+// Listen to POST requests to /plans/new.
+app.post('/plans/new', function(req, res) {
+  // Do a MySQL query
+  /*var query = con.query("INSERT INTO customer_invoices (name, plan, servProd, flatRate, totalDue, startDate, endDate, longDistanceAllowed, longDistanceUsage, longDistanceOverageChargeRate, textMsgSentAllowed, textMsgSentUsage, textMsgSentOverageChargeRate, textMsgReceivedAllowed, textMsgReceivedUsage, textMsgReceivedOverageChargeRate, dataAllowed, dataUsage, dataOverageChargeRate, localAirtimeAllowed, localAirtimeUsage, localAirtimeOverageChargeRate) VALUES ('"+req.body.name+"', '"+req.body.plan+"', '"+req.body.servProd+"', '"+req.body.flatRate+"', '"+req.body.totalDue+"', '"+req.body.startDate+"', '"+req.body.endDate+"', '"+req.body.longDistanceAllowed+"', '"+req.body.longDistanceUsage+"', '"+req.body.longDistanceOverageChargeRate+"', '"+req.body.textMsgSentAllowed+"', '"+req.body.textMsgSentUsage+"', '"+req.body.textMsgSentOverageChargeRate+"', '"+req.body.textMsgReceivedAllowed+"', '"+req.body.textMsgReceivedUsage+"', '"+req.body.textMsgReceivedOverageChargeRate+"', '"+req.body.dataAllowed+"', '"+req.body.dataUsage+"', '"+req.body.dataOverageChargeRate+"', '"+req.body.localAirtimeAllowed+"', '"+req.body.localAirtimeUsage+"', '"+req.body.localAirtimeOverageChargeRate+"')", function (err, result) {
+    if (err) throw err;
+    res.json(result);
+  });*/
 });
 
 app.listen(3000, function() {
