@@ -120,13 +120,13 @@ class Form extends React.Component {
         "Accept": "application/json"
       }
     })
-      .then((response) => {
-        if(response.ok){
-          response.json().then(json => {
-            console.log(json);
-          });
-        }
-      });
+    .then((response) => {
+      if(response.ok){
+        response.json().then(json => {
+          console.log(json);
+        });
+      }
+    });
       
 
     // On submit of the form, send a POST request with the data to the server.
@@ -203,9 +203,44 @@ class Form extends React.Component {
         {this.potentialLocalAirtimeOverage > 0 ? <p><strong>Overage Charge for Local Airtime: ${this.localAirtimeOverageChargeRate}</strong>({this.potentialLocalAirtimeOverage} overage minutes of local airtime @ $0.5 / overage minute)</p> : null}
 
         <input type="submit" value="Submit" />
+        <Plans/>
       </form>
-      
     );
   }
+}
+class Plans extends React.Component {
+  constructor() {
+    super();
+    this.state = {
+      plans: [],
+    };
+  }
+
+  componentDidMount() {
+    // executing a GET
+    fetch('http://localhost:3000/plans')
+    .then(results => {
+        return results.json();
+      }).then(data => {
+        let plans = data.map((plan) => {
+          return (<div key={plan.plan}>
+                    <p>{plan.servProd}, {plan.plan}, {plan.flatRate}, {plan.longDistanceAllowed}, {plan.longDistanceOverageChargeRate}, {plan.textMsgSentAllowed}, {plan.textMsgSentOverageChargeRate}, {plan.textMsgReceivedAllowed}, {plan.textMsgReceivedOverageChargeRate}, {plan.dataAllowed}, {plan.dataOverageChargeRate}, {plan.localAirtimeAllowed}, {plan.localAirtimeOverageChargeRate}, {plan.additionFeatures}}</p>
+                 </div>
+          )    
+        })
+
+        this.setState({plans: plans});
+        console.log("state", this.state.plans);
+      })
+
+  } 
+    
+  render() {
+      return (
+         <div>
+            {this.state.plans}
+         </div>
+      );
+   }
 }
 export default App;
