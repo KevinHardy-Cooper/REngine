@@ -1,21 +1,6 @@
 import React from 'react';
 
 class App extends React.Component {
-
-   constructor(props) {
-      super(props);
-      
-      this.state = {
-         data: 'Initial data...'
-      }
-
-      this.updateState = this.updateState.bind(this);
-   };
-
-   updateState(e) {
-      this.setState({data: e.target.value});
-   }
-
    render() {
       return (
          <div>
@@ -41,7 +26,7 @@ class Request extends React.Component {
    render() {
       return (
          <div>
-            <h2>Please enter your invoice data below...</h2>
+            <h2>Randomly generated invoice data below..</h2>
          </div>
       );
    }
@@ -112,63 +97,7 @@ class Form extends React.Component {
   handleSubmit(event) {
     event.preventDefault();
     
-
-    // For testing, executing a GET
-    fetch('http://localhost:3000/invoices', {
-      method: "GET",
-      headers: {
-        "Accept": "application/json"
-      }
-    })
-    .then((response) => {
-      if(response.ok){
-        response.json().then(json => {
-          console.log(json);
-        });
-      }
-    });
-      
-
-    // On submit of the form, send a POST request with the data to the server.
-
-    /*fetch('http://localhost:3000/invoices/new', {
-      method: "POST",
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        name: this.name,
-        plan: this.plan, 
-        servProd: this.servProd, 
-        flatRate: this.flatRate, 
-        totalDue: this.totalDue, 
-        startDate: this.startDate, 
-        endDate: this.endDate, 
-        longDistanceAllowed: this.longDistanceAllowed, 
-        longDistanceUsage: this.longDistanceUsage, 
-        longDistanceOverageChargeRate: this.longDistanceOverageChargeRate, 
-        textMsgSentAllowed: this.textMsgSentAllowed, 
-        textMsgSentUsage: this.textMsgSentUsage, 
-        textMsgSentOverageChargeRate: this.textMsgSentOverageChargeRate, 
-        textMsgReceivedAllowed: this.textMsgReceivedAllowed, 
-        textMsgReceivedUsage: this.textMsgReceivedUsage, 
-        textMsgReceivedOverageChargeRate: this.textMsgReceivedOverageChargeRate, 
-        dataAllowed: this.dataAllowed, 
-        dataUsage: this.dataUsage, 
-        dataOverageChargeRate: this.dataOverageChargeRate, 
-        localAirtimeAllowed: this.localAirtimeAllowed, 
-        localAirtimeUsage: this.localAirtimeUsage, 
-        localAirtimeOverageChargeRate: this.localAirtimeOverageChargeRate
-      })
-    }).then((response) => {
-    // We just want to check if the post was ok
-        if(response.ok){
-          response.json().then(json => {
-            console.log(json);
-          });
-        }
-      });*/
+    console.log("Submitted ;)");
   }
 
   render() {
@@ -203,11 +132,14 @@ class Form extends React.Component {
         {this.potentialLocalAirtimeOverage > 0 ? <p><strong>Overage Charge for Local Airtime: ${this.localAirtimeOverageChargeRate}</strong>({this.potentialLocalAirtimeOverage} overage minutes of local airtime @ $0.5 / overage minute)</p> : null}
 
         <input type="submit" value="Submit" />
+
         <Plans/>
+
       </form>
     );
   }
 }
+
 class Plans extends React.Component {
   constructor() {
     super();
@@ -217,6 +149,7 @@ class Plans extends React.Component {
   }
 
   componentDidMount() {
+
     // executing a GET
     fetch('http://localhost:3000/plans')
     .then(results => {
@@ -224,16 +157,12 @@ class Plans extends React.Component {
       }).then(data => {
         let plans = data.map((plan) => {
           return (<div key={plan.plan}>
-                    <p>{plan.servProd}, {plan.plan}, {plan.flatRate}, {plan.longDistanceAllowed}, {plan.longDistanceOverageChargeRate}, {plan.textMsgSentAllowed}, {plan.textMsgSentOverageChargeRate}, {plan.textMsgReceivedAllowed}, {plan.textMsgReceivedOverageChargeRate}, {plan.dataAllowed}, {plan.dataOverageChargeRate}, {plan.localAirtimeAllowed}, {plan.localAirtimeOverageChargeRate}, {plan.additionFeatures}}</p>
+                    <p>{plan.servProd}, {plan.plan}, {plan.flatRate}, {plan.longDistanceAllowed}, {plan.longDistanceOverageChargeRate}, {plan.textMsgSentAllowed}, {plan.textMsgSentOverageChargeRate}, {plan.textMsgReceivedAllowed}, {plan.textMsgReceivedOverageChargeRate}, {plan.dataAllowed}, {plan.dataOverageChargeRate}, {plan.localAirtimeAllowed}, {plan.localAirtimeOverageChargeRate}, {plan.additionFeatures}</p>
                  </div>
-          )    
-        })
-
+        )})
         this.setState({plans: plans});
-        console.log("state", this.state.plans);
       })
-
-  } 
+  }
     
   render() {
       return (
@@ -243,4 +172,5 @@ class Plans extends React.Component {
       );
    }
 }
+
 export default App;
