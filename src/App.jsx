@@ -6,7 +6,7 @@ class App extends React.Component {
       return (
          <div>
             <Header/>
-            <Request/>
+            <Info/>
             <Form/>
          </div>
       );
@@ -23,7 +23,7 @@ class Header extends React.Component {
    }
 }
 
-class Request extends React.Component {
+class Info extends React.Component {
    render() {
       return (
          <div>
@@ -134,8 +134,7 @@ class Form extends React.Component {
 
         <input type="submit" value="Submit" />
 
-        <Plans/>
-
+        <Plans longDistanceUsage={this.longDistanceUsage} textMsgSentUsage = {this.textMsgSentUsage} textMsgReceivedUsage = {this.textMsgReceivedUsage} dataUsage = {this.dataUsage} localAirtimeUsage = {this.localAirtimeUsage}/>
       </form>
     );
   }
@@ -151,24 +150,38 @@ class Plans extends React.Component {
 
   componentDidMount() {
 
-    // executing a GET
+    // GET all plans
     fetch('http://localhost:3000/plans')
     .then(results => {
         return results.json();
       }).then(data => {
-        let plans = data.map((plan) => {
-          return (<div key={plan.plan}>
-                    <p>{plan.servProd}, {plan.plan}, {plan.flatRate}, {plan.longDistanceAllowed}, {plan.longDistanceOverageChargeRate}, {plan.textMsgSentAllowed}, {plan.textMsgSentOverageChargeRate}, {plan.textMsgReceivedAllowed}, {plan.textMsgReceivedOverageChargeRate}, {plan.dataAllowed}, {plan.dataOverageChargeRate}, {plan.localAirtimeAllowed}, {plan.localAirtimeOverageChargeRate}, {plan.additionFeatures}</p>
-                 </div>
-        )})
-        this.setState({plans: plans});
+        this.setState({plans: data});   
       })
   }
     
   render() {
       return (
          <div>
-            {this.state.plans}
+            <RecommendedPlans plans={this.state.plans} usages={this.props}/>
+         </div>
+      );
+   }
+}
+
+class RecommendedPlans extends React.Component {
+   render() {
+      /* Now that we have the plans at this.props.plans, and we have the usages via this.props.usages, we can check each usage parameter against each usage, until we find an acceptable plan given the usage */ 
+
+      if (this.props.plans.length == 0){
+      return null;
+      }
+      console.log(this.props.plans);
+      console.log(this.props.usages);
+
+  
+      return (
+         <div>
+            <h1>Recommend Plans Here!</h1>
          </div>
       );
    }
