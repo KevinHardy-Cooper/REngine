@@ -1,6 +1,7 @@
 // Importing module
 import React from 'react';
 
+// App component that will be the master parent component
 class App extends React.Component {
    render() {
       return (
@@ -13,6 +14,7 @@ class App extends React.Component {
    }
 }
 
+// This component will contain the title for the page
 class Header extends React.Component {
    render() {
       return (
@@ -23,6 +25,7 @@ class Header extends React.Component {
    }
 }
 
+// This component provides direction to the viewer
 class Info extends React.Component {
    render() {
       return (
@@ -33,6 +36,7 @@ class Info extends React.Component {
    }
 }
 
+// This component contains randomly generated form data
 class Form extends React.Component {
   constructor(props) {
     super(props);
@@ -140,6 +144,7 @@ class Form extends React.Component {
   }
 }
 
+// This component grabs the phone plans from the backend
 class Plans extends React.Component {
   constructor() {
     super();
@@ -173,12 +178,28 @@ class RecommendedPlans extends React.Component {
       /* Now that we have the plans at this.props.plans, and we have the usages via this.props.usages, we can check each usage parameter against each usage, until we find an acceptable plan given the usage */ 
 
       if (this.props.plans.length == 0){
-      return null;
+        return null;
       }
       console.log(this.props.plans);
       console.log(this.props.usages);
 
-  
+      // Creating local variables for props
+      var plans = this.props.plans;
+      var usages = this.props.usages;
+
+      // These arrays will contain plans that fit the user's usages
+      var longDistancePlans = [];
+
+      // Iterating through each plan in plans
+      for (var plan in plans) {
+        //console.log(plans[plan]);
+        if (usages.longDistanceUsage < plans[plan].longDistanceAllowed) {
+          longDistancePlans.push(plans[plan]);
+        }
+      }  
+      console.log(longDistancePlans);
+
+
       return (
          <div>
             <h1>Recommend Plans Here!</h1>
