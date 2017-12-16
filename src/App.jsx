@@ -188,17 +188,38 @@ class RecommendedPlans extends React.Component {
       var usages = this.props.usages;
 
       // These arrays will contain plans that fit the user's usages
-      var longDistancePlans = [];
+      var validPlans = [];
 
       // Iterating through each plan in plans
       for (var plan in plans) {
-        //console.log(plans[plan]);
-        if (usages.longDistanceUsage < plans[plan].longDistanceAllowed) {
-          longDistancePlans.push(plans[plan]);
-        }
-      }  
-      console.log(longDistancePlans);
 
+        // We want to loop through keys in dictionary and check if any values are equal to "INFINITY"
+        for (var key in plans[plan]) {
+
+          // If so, we want to convert this string to a number representing positive infinity
+          if (plans[plan][key] === "INFINITY") {
+            plans[plan][key] = Number.POSITIVE_INFINITY;
+          }
+        }
+
+        // These variables reflect the user's usage is less than the allowed usage of that attribute on the plan
+        var validLongDistance = usages.longDistanceUsage < plans[plan].longDistanceAllowed;
+
+        var validTextMsgSent = usages.textMsgSentUsage < plans[plan].textMsgSentAllowed;
+        
+        var validTextMsgReceived = usages.textMsgReceivedUsage < plans[plan].textMsgReceivedAllowed;
+
+        var validData = usages.dataUsage < plans[plan].dataAllowed;
+
+        var validLocalAirtime = usages.localAirtimeUsage < plans[plan].localAirtimeAllowed;
+
+        // If all allowed usages are greater than the user's usages, then add to valid plans
+        if (validLongDistance && validTextMsgSent && validTextMsgReceived && validData && validLocalAirtime) {
+          validPlans.push(plans[plan]);
+        }
+      }
+
+      console.log(validPlans);
 
       return (
          <div>
