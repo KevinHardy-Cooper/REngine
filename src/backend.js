@@ -1,3 +1,11 @@
+/*
+  December 18, 2017
+  Created by Kevin Hardy-Cooper
+
+  Abstract:
+  This file contains the end point and database interactions
+*/
+
 // Importing modules
 var mysql = require('mysql');
 var express = require('express');

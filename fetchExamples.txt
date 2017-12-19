@@ -1,0 +1,56 @@
+// For testing, executing a GET
+    fetch('http://localhost:3000/invoices', {
+      method: "GET",
+      headers: {
+        "Accept": "application/json"
+      }
+    })
+    .then((response) => {
+      if(response.ok){
+        response.json().then(json => {
+          console.log(json);
+        });
+      }
+    });
+      
+
+    // On submit of the form, send a POST request with the data to the server.
+
+    /*fetch('http://localhost:3000/invoices/new', {
+      method: "POST",
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name: this.name,
+        plan: this.plan, 
+        servProd: this.servProd, 
+        flatRate: this.flatRate, 
+        totalDue: this.totalDue, 
+        startDate: this.startDate, 
+        endDate: this.endDate, 
+        longDistanceAllowed: this.longDistanceAllowed, 
+        longDistanceUsage: this.longDistanceUsage, 
+        longDistanceOverageChargeRate: this.longDistanceOverageChargeRate, 
+        textMsgSentAllowed: this.textMsgSentAllowed, 
+        textMsgSentUsage: this.textMsgSentUsage, 
+        textMsgSentOverageChargeRate: this.textMsgSentOverageChargeRate, 
+        textMsgReceivedAllowed: this.textMsgReceivedAllowed, 
+        textMsgReceivedUsage: this.textMsgReceivedUsage, 
+        textMsgReceivedOverageChargeRate: this.textMsgReceivedOverageChargeRate, 
+        dataAllowed: this.dataAllowed, 
+        dataUsage: this.dataUsage, 
+        dataOverageChargeRate: this.dataOverageChargeRate, 
+        localAirtimeAllowed: this.localAirtimeAllowed, 
+        localAirtimeUsage: this.localAirtimeUsage, 
+        localAirtimeOverageChargeRate: this.localAirtimeOverageChargeRate
+      })
+    }).then((response) => {
+    // We just want to check if the post was ok
+        if(response.ok){
+          response.json().then(json => {
+            console.log(json);
+          });
+        }
+      });*/
